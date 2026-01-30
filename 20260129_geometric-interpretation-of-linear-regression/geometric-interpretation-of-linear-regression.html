@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Linear Regression Geometry - Refined</title>
+    <!-- Updated Plotly to a modern version (v2.35.2) -->
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <!-- Include MathJax for LaTeX rendering in Legend -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <style>
+        body { margin: 0; padding: 0; font-family: sans-serif; background-color: #f8f9fa; }
+        #chart { width: 100vw; height: 100vh; }
+    </style>
+</head>
+<body>
+    <div id="chart"></div>
+    <script>
+        /**
+         * Geometric Interpretation of Linear Regression (n=3)
+         * - Clean Legend (No Box)
+         * - Residual Vector Arrow points from Yhat -> Y
+         */
+
+        // 1. Data Setup (n=3)
+        // Observation Point Y
+        const y_data = [1.5, 9.0, 3.5]; 
+        const x_data = [1, 2, 3];
+        const v1_data = [1, 1, 1];
+
+        // 2. Mathematical Projection Calculation (for y_data)
+        const y_hat = [3.67, 4.67, 5.67]; 
+
+        // 3. Trace Definitions
+        
+        // Observation Point Y (Red Label)
+        const traceY = {
+            x: [y_data[0]], y: [y_data[1]], z: [y_data[2]],
+            mode: 'markers+text',
+            marker: { size: 9, color: '#ef4444'},
+            text: ['Observation'],
+            textfont: { color: '#ef4444', size: 14 },
+            textposition: 'top center',
+            name: 'Observation (Y)',
+            hovertemplate: 'Observed Y: (%{x}, %{y}, %{z})<extra></extra>',
+            type: 'scatter3d'
+        };
+
+        // Least Square Projection (Blue Label)
+        const traceYHat = {
+            x: [y_hat[0]], y: [y_hat[1]], z: [y_hat[2]],
+            mode: 'markers+text',
+            marker: { size: 7, color: '#3b82f6' },
+            text: ['Least Square \nPrediction'],
+            textfont: { color: '#3b82f6', size: 12 },
+            textposition: 'bottom center',
+            name: 'Least Square Prediction',
+            hovertemplate: 'Prediction %{x:.2f}, %{y:.2f}, %{z:.2f}<extra></extra>',
+            type: 'scatter3d'
+        };
+
+        // Residual Vector (Error) - Solid line
+        const residualLine = {
+            x: [y_data[0], y_hat[0]],
+            y: [y_data[1], y_hat[1]],
+            z: [y_data[2], y_hat[2]],
+            mode: 'lines',
+            line: { color: '#1f2937', width: 6 }, 
+            name: 'Residual Vector (Error)',
+            type: 'scatter3d'
+        };
+
+        // Residual Vector Arrowhead (Points from Yhat -> Y)
+        const residualCone = {
+            x: [y_data[0]], y: [y_data[1]], z: [y_data[2]], // Tip is at Y (Observation)
+            u: [y_data[0] - y_hat[0]], // Vector direction: Y - Yhat
+            v: [y_data[1] - y_hat[1]], 
+            w: [y_data[2] - y_hat[2]],
+            sizemode: 'absolute',
+            sizeref: 0.1, 
+            anchor: 'tip',
+            colorscale: [[0, '#1f2937'], [1, '#1f2937']],
+            showscale: false,
+            name: 'Residual Arrow',
+            showlegend: false,
+            hoverinfo: 'none',
+            type: 'cone'
+        };
+
+        // Slope-only basis vector - Solid line
+        const vecXLine = {
+            x: [0, x_data[0] * 3], 
+            y: [0, x_data[1] * 3], 
+            z: [0, x_data[2] * 3],
+            mode: 'lines',
+            line: { color: '#3b82f6', width: 2 },
+            name: 'Slope-only ($\\hat{y} = kx$)',
+            type: 'scatter3d'
+        };
+
+        // Intercept-only basis vector - Dashed line
+        const vec1Line = {
+            x: [0, v1_data[0] * 8], 
+            y: [0, v1_data[1] * 8], 
+            z: [0, v1_data[2] * 8],
+            mode: 'lines',
+            line: { color: '#3b82f6', width: 2, dash: 'dash' },
+            name: 'Intercept-only ($\\hat{y} = b$)',
+            type: 'scatter3d'
+        };
+
+        // --- Custom Axes with Arrows ---
+        const axisLen = 11;
+        
+        // Axis Lines (Shafts)
+        const axesLines = {
+            x: [0, axisLen, null, 0, 0, null, 0, 0],
+            y: [0, 0, null, 0, axisLen, null, 0, 0],
+            z: [0, 0, null, 0, 0, null, 0, axisLen],
+            mode: 'lines',
+            line: { color: 'black', width: 3 },
+            showlegend: false,
+            hoverinfo: 'none',
+            type: 'scatter3d'
+        };
+
+        // Axis Arrowheads (Cones)
+        const axesCones = {
+            x: [axisLen, 0, 0],
+            y: [0, axisLen, 0],
+            z: [0, 0, axisLen],
+            u: [1, 0, 0], // Direction X
+            v: [0, 1, 0], // Direction Y
+            w: [0, 0, 1], // Direction Z
+            sizemode: 'absolute',
+            sizeref: 0.1,
+            anchor: 'tail',
+            colorscale: [[0, 'black'], [1, 'black']],
+            showscale: false,
+            name: 'Axes',
+            showlegend: false,
+            hoverinfo: 'none',
+            type: 'cone'
+        };
+
+        // Axis Labels (Text at tips)
+        const axesLabels = {
+            x: [axisLen + 0.5, 0, 0],
+            y: [0, axisLen + 0.5, 0],
+            z: [0, 0, axisLen + 0.5],
+            mode: 'text',
+            text: ['y₁', 'y₂', 'y₃'],
+            textfont: { size: 24, color: 'black', family: 'serif', weight: 'bold' },
+            showlegend: false,
+            hoverinfo: 'none',
+            type: 'scatter3d'
+        };
+
+        // 4. Fitting Subspace Generation
+        let planeX = [], planeY = [], planeZ = [];
+        for (let k = -2; k <= 5; k += 0.5) {
+            let rowX = [], rowY = [], rowZ = [];
+            for (let b = -4; b <= 8; b += 0.5) {
+                rowX.push(k * x_data[0] + b * v1_data[0]);
+                rowY.push(k * x_data[1] + b * v1_data[1]);
+                rowZ.push(k * x_data[2] + b * v1_data[2]);
+            }
+            planeX.push(rowX);
+            planeY.push(rowY);
+            planeZ.push(rowZ);
+        }
+
+        const surface = {
+            x: planeX, y: planeY, z: planeZ,
+            type: 'surface',
+            opacity: 0.2,
+            colorscale: [[0, '#dbeafe'], [1, '#3b82f6']],
+            showscale: false,
+            name: 'Fitting Subspace',
+            hoverinfo: 'none'
+        };
+
+        // 5. Layout Configuration
+        const noAxis = {
+            showgrid: false,
+            zeroline: false,
+            showline: false,
+            showticklabels: false,
+            title: '',
+            showbackground: false
+        };
+
+        const layout = {
+            // Clean Legend: Removed box styling
+            legend: { 
+                x: 0.05, 
+                y: 0.95,
+                font: { size: 14 }
+            }, 
+            title: {
+                text: '<b>Geometric Interpretation of Linear Regression</b><br>',
+                font: { size: 18 }
+            },
+            scene: {
+                xaxis: { ...noAxis, range: [-2, 13] },
+                yaxis: { ...noAxis, range: [-2, 13] },
+                zaxis: { ...noAxis, range: [-2, 13] },
+                camera: {
+                    eye: { x: 1.3, y: 1.0, z: 0.65 }
+                },
+                aspectmode: 'cube'
+            },
+            margin: { l: 0, r: 0, b: 0, t: 80 },
+
+        };
+
+        Plotly.newPlot('chart', [
+            surface, 
+            axesLines, axesCones, axesLabels, // Axes components
+            vecXLine, vec1Line, residualLine, residualCone, 
+            traceY, traceYHat
+        ], layout);
+    </script>
+</body>
+</html>
