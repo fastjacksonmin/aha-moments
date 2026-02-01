@@ -1,12 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from matplotlib.colors import ListedColormap
 
 # ==========================================
 # 1. 模拟参数设置 (调节旋钮)
 # ==========================================
 # 网格尺寸
-N = 200              
+N = 150              
 
 # 扩散系数 (Diffusivity)
 # Dv 必须显著小于 Du 才能产生稳定的图灵模式
@@ -18,29 +19,35 @@ Du, Dv = 0.16, 0.08
 # 斑马纹 (Stripes): F=0.042, k=0.060
 # 迷宫 (Maze): F=0.035, k=0.060
 # 细胞分裂 (Mitosis): F=0.036, k=0.064
-F = 0.035            
+F = 0.030
 k = 0.062
 
 dt = 1.0             # 时间步长
+
+
+cmap = 'magma'
+# Color map for Cheetah
+custom_colors = ['#D7AC65', '#211309']
+cmap = ListedColormap(custom_colors)
 
 # ==========================================
 # 2. 初始状态设置
 # ==========================================
 # u 初始为 1.0 (充满底质)
-u = np.ones((N, N))
+u = np.ones((N, N)) * 0.5
 # v 初始为 0.0 (无激活剂)
-v = np.zeros((N, N))
+v = np.zeros((N, N)) 
 
 # 加入初始扰动 (在中心撒下一小块“种子”)
 # 这就是打破对称性的初始“噪声”
 r = 10
 center = N // 2
-u[center-r:center+r, center-r:center+r] = 0.5
-v[center-r:center+r, center-r:center+r] = 0.25
+# u[center-r:center+r, center-r:center+r] = 1
+# v[center-r:center+r, center-r:center+r] = 0.25
 
 # 加入全局微量随机噪声
-u += np.random.random((N, N)) * 0.02
-v += np.random.random((N, N)) * 0.02
+u += np.random.random((N, N)) * 0.1
+v += np.random.random((N, N)) * 0.4
 
 # ==========================================
 # 3. 核心算法 (拉普拉斯与迭代)
@@ -83,7 +90,7 @@ def update(frame):
 # 4. 动画展示
 # ==========================================
 fig, ax = plt.subplots(figsize=(6, 6))
-im = ax.imshow(v, cmap='magma', interpolation='bilinear')
+im = ax.imshow(v, cmap=cmap, interpolation='bilinear')
 ax.set_title(f"Turing Pattern (F={F}, k={k})")
 ax.axis('off')
 
