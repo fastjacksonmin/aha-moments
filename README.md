@@ -21,6 +21,7 @@ YYYYMMDD_<short-title>/
 | Date       | Title |
 |-----------|--------|
 | 2026-01-29 | [Geometric interpretation of linear regression](20260129_geometric-interpretation-of-linear-regression/) |
+| 2026-01-31 | [Turing pattern](20260131_Turing-pattern/)
 
 ---
 
