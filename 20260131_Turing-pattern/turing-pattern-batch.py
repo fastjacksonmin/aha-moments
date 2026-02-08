@@ -9,6 +9,26 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from typing import Sequence
+# ---------------------------------------------------------------------------
+# 0. Constants
+# ---------------------------------------------------------------------------
+
+# Grid NxN canvas
+N = 150
+dt = 1
+n_steps = 10000
+# (F, k) presets from original comments
+PRESETS = {
+    "spots": (0.030, 0.062),
+    "stripes": (0.042, 0.060),
+    "maze": (0.035, 0.060),
+    "mitosis": (0.036, 0.064),
+}
+
+custom_colors = ["#D7AC65", "#211309"]
+cmap = ListedColormap(custom_colors)
+
+
 
 # ---------------------------------------------------------------------------
 # 1. Initial conditions (parametrized)
@@ -53,8 +73,8 @@ def initial_condition(
         u[r0:r1, c0:c1] = u_seed
         v[r0:r1, c0:c1] = v_seed
 
-    u += np.random.random((N, N)).astype(np.float64) * noise_u
-    v += np.random.random((N, N)).astype(np.float64) * noise_v
+    u += (np.random.random((N, N)).astype(np.float64)) * (np.random.random((N, N)).astype(np.float64) > 0.7) * noise_u
+    v += (np.random.random((N, N)).astype(np.float64)) * (np.random.random((N, N)).astype(np.float64) > 0.7) * noise_v
 
     return u, v
 
@@ -113,27 +133,11 @@ def evolve(
 # 3. Batch run: one or several (F, k), show final state(s)
 # ---------------------------------------------------------------------------
 
-# Defaults matching turing-pattern.py
-N = 150
-Du, Dv = 0.16, 0.08
-dt = 1.0
-n_steps = 10_000
-
-# (F, k) presets from original comments
-PRESETS = {
-    "spots": (0.030, 0.062),
-    "stripes": (0.042, 0.060),
-    "maze": (0.035, 0.060),
-    "mitosis": (0.036, 0.064),
-}
-
-custom_colors = ["#D7AC65", "#211309"]
-cmap = ListedColormap(custom_colors)
-
-
 def run_one(
     F: float,
     k: float,
+    Du: float, 
+    Dv: float,
     N: int = N,
     seed_centers: tuple[int, int, int] | None = None,
     random_seed: int | None = None,
@@ -174,18 +178,27 @@ def example_one_and_grid_plot() -> None:
     plt.show()
 
 def main() -> None:
+    # Defaults matching turing-pattern.py
+    
+    Du_base, Dv_base = 0.16, 0.08
+    # dt = 1.0
+    # n_steps = 10_000
+
     # Example of randomly generate F and k based on PRESETS plus some random noise with 100 iterations
-    for i in range(100):
+    for i in range(1000):
         F_base, k_base = PRESETS[np.random.choice(list(PRESETS.keys()))]
         F = (1 + np.random.uniform(-0.5, 0.5)) * F_base
         k = (1 + np.random.uniform(-0.5, 0.5)) * k_base
-        print(f"F: {F}, k: {k}")
-        _, v_final = run_one(F, k, random_seed=None)
+        Du =(1 + np.random.uniform(-0.5, 0.5)) * Du_base
+        Dv =(1 + np.random.uniform(-0.5, 0.5)) * Dv_base
+
+        print(f"F: {F}, k: {k}, Du: {Du}, Dv: {Dv}")
+        _, v_final = run_one(F, k, Du=Du, Dv=Dv, random_seed=None)
         plt.imshow(v_final, cmap=cmap, interpolation="bilinear")
         plt.title(f"Turing pattern (F={F:.3f}, k={k:.3f}), {n_steps} steps")
         plt.axis("off")
         plt.tight_layout()
-        plt.savefig(f"20260131_Turing-pattern/results/turing-pattern-batch-random-{i}-F{F:.3f}-k{k:.3f}.png", dpi=120)
+        plt.savefig(f"20260131_Turing-pattern/results/turing-pattern-batch-random-{i}-F{F:.3f}-k{k:.3f}-Du{Du:.2f}-Dv{Dv:.2f}.png", dpi=120)
         # plt.show()
 
 
