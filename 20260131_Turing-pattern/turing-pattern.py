@@ -44,6 +44,11 @@ F, k= 0.036, 0.064 # 细胞分裂 Mitosis
 
 dt = 1            # 时间步长
 
+# 保存动画：设为 True 会先写入文件再显示窗口
+SAVE_ANIMATION = False
+OUTPUT_FILE = "turing_pattern.gif"   # .gif 用 Pillow；.mp4 需安装 ffmpeg 并改用 writer="ffmpeg"
+SAVE_FPS = 30
+SAVE_FRAMES = 200   # 与 FuncAnimation 的 frames 一致即可
 
 cmap = 'magma'
 # Color map for Cheetah
@@ -128,7 +133,13 @@ ax.set_title(f"Turing Pattern (F={F}, k={k})" + (" [GPU]" if _GPU else " [CPU]")
 ax.axis('off')
 
 # 创建实时动画
-ani = FuncAnimation(fig, update, frames=200, interval=1, blit=True)
+ani = FuncAnimation(fig, update, frames=SAVE_FRAMES, interval=1, blit=True)
+
+if SAVE_ANIMATION:
+    print(f"正在保存动画到 {OUTPUT_FILE} ...")
+    writer = "ffmpeg" if OUTPUT_FILE.lower().endswith(".mp4") else "pillow"
+    ani.save(OUTPUT_FILE, writer=writer, fps=SAVE_FPS)
+    print(f"已保存: {OUTPUT_FILE}")
 
 plt.show()
 
