@@ -81,13 +81,13 @@ What struck me most was Turing's commitment to Discretization. He discusses the 
 
 This passage is a bit of a tongue-twister, but as a "Turing Translator," I see four logical steps:
 
-Admitting Reality: Treating life as a grid of discrete cells is, physically, a "falsification."
+- Admitting Reality: Treating life as a grid of discrete cells is, physically, a "falsification."
 
-The Lumped Model: If every cell were "perfectly stirred," the model would be absolute truth. This is exactly like the Lumped Circuit Model in electronics, where we treat distributed structures as discrete nodes.
+- The Lumped Model: If every cell were "perfectly stirred," the model would be absolute truth. This is exactly like the Lumped Circuit Model in electronics, where we treat distributed structures as discrete nodes.
 
-The Representative Point: If stirring isn't perfect, we assume the "cell concentration" represents the center point—even though "point concentration" is a physical headache (molecules have volume!).
+- The Representative Point: If stirring isn't perfect, we assume the "cell concentration" represents the center point—even though "point concentration" is a physical headache (molecules have volume!).
 
-Convenience Wins: His brilliant conclusion—regardless of the debate, the approximation works well, and most importantly, it is convenient for calculation!
+- Convenience Wins: His brilliant conclusion—regardless of the debate, the approximation works well, and most importantly, it is convenient for calculation!
 
 This decision—to sacrifice absolute precision for computational efficiency—is the direct ancestor of modern Finite Element Analysis (FEA) and SPICE simulations.
 
