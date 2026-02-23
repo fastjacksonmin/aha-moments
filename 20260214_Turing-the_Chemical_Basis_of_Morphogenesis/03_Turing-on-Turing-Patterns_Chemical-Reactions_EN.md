@@ -77,7 +77,7 @@ Aha Moment: In Turing’s eyes, genes are the Logic Firmware of the sandbox. Sin
 
 What struck me most was Turing's commitment to Discretization. He discusses the validity of his "Cell Model" with a mix of rigorous defense and charmingly "cheeky" pragmatism:
 
-"This description of the system in terms of the concentrations in the various cells is, of course, only an approximation. It would be justified if, for instance, the contents were perfectly stirred... The author believes that the approximation is a good one, whatever argument is used to justify it, and it is certainly a convenient one."
+> "This description of the system in terms of the concentrations in the various cells is, of course, only an approximation. It would be justified if, for instance, the contents were perfectly stirred... The author believes that the approximation is a good one, whatever argument is used to justify it, and it is certainly a convenient one."
 
 This passage is a bit of a tongue-twister, but as a "Turing Translator," I see four logical steps:
 
