@@ -82,7 +82,7 @@ A two-way catastrophe unfolds:
 
 This structure — **short-range positive feedback combined with long-range negative feedback** — transforms two originally symmetric cells into a “peak” and a “valley” through nothing more than a few additions and subtractions.
 
-If you are interested, you can find the detailed step-by-step arithmetic in the [Appendix](#appendix--reconstructing-turings-arithmetic).
+If you are interested, you can find the detailed step-by-step arithmetic in the [Appendix](04_Turing-on-Turing-Patterns_Symmetry-Breaking_Appendix_EN.md#appendix--how-did-turing-actually-do-this-arithmetic).
 
 ## 6. Turing’s “Defensive” Modeling: A Hypothetical Biochemical Laboratory
 
